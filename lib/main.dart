@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearest_hospitals/Notifiers/location_notifier.dart';
+import 'package:nearest_hospitals/Notifiers/places_notifier.dart';
 import 'package:nearest_hospitals/screens/home.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,8 @@ class NearestHospitals extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => LocationNotifier())
+        ChangeNotifierProvider(create: (context) => LocationNotifier()),
+        ChangeNotifierProvider(create: (conext) => PlacesNotifier())
       ],
       child: MaterialApp(
         title: 'Nearest Hospitals app',
