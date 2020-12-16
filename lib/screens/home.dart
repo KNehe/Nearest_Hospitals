@@ -6,8 +6,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nearest_hospitals/Notifiers/location_notifier.dart';
 import 'package:nearest_hospitals/models/location.dart';
 import 'package:nearest_hospitals/models/venue.dart';
+import 'package:nearest_hospitals/models/venue_element.dart';
 import 'package:provider/provider.dart';
 import 'package:nearest_hospitals/Notifiers/places_notifier.dart';
+import 'package:nearest_hospitals/widgets/bottom_sheet.dart'
+    as ModalBottomSheet;
 
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
@@ -25,6 +28,11 @@ class _HomeState extends State<Home> {
   );
 
   final Map<String, Marker> _markers = {};
+
+  final _scafoldKey = GlobalKey<ScaffoldState>();
+
+  bool _isCreatingMarkers = true;
+  bool _isLoadingDetails = false;
 
   _onMapCreated(GoogleMapController controller) async {
     await Provider.of<LocationNotifier>(context, listen: false)
@@ -56,10 +64,9 @@ class _HomeState extends State<Home> {
         final marker = Marker(
           markerId: MarkerId(venue.name),
           position: LatLng(venue.location.lat, venue.location.lng),
-          infoWindow: InfoWindow(
-            title: venue.name,
-            snippet: venue.location.address ?? 'No address found',
-          ),
+          onTap: () {
+            _onMarkerTappedHandler(venue);
+          },
         );
 
         _markers[venue.name] = marker;
@@ -71,6 +78,10 @@ class _HomeState extends State<Home> {
         Position(longitude: lastLocation.lng, latitude: lastLocation.lat);
 
     _animateCamera(controller, position);
+
+    setState(() {
+      _isCreatingMarkers = false;
+    });
   }
 
   _animateCamera(GoogleMapController controller, Position position) {
@@ -87,14 +98,39 @@ class _HomeState extends State<Home> {
     );
   }
 
+  _onMarkerTappedHandler(VenueElement venueElement) {
+    setState(() {
+      _isLoadingDetails = true;
+    });
+
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return ModalBottomSheet.BottomSheet(venueElement: venueElement);
+        });
+
+    setState(() {
+      _isLoadingDetails = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
     return SafeArea(
       child: Scaffold(
+        key: _scafoldKey,
         appBar: AppBar(
-          title: Text('Nearest hospitals'),
+          title: Row(
+            children: [
+              Icon(Icons.local_hospital),
+              SizedBox(
+                width: 5,
+              ),
+              Text('Nearest Hospitals'),
+            ],
+          ),
         ),
         body: Stack(
           children: [
@@ -103,7 +139,30 @@ class _HomeState extends State<Home> {
               onMapCreated: _onMapCreated,
               markers: _markers.values.toSet(),
             ),
-            //show any error when when location permission
+
+            //progress when loading markers
+            Consumer<LocationNotifier>(builder: (context, notifier, child) {
+              return Align(
+                child: notifier.getError == null && _isCreatingMarkers
+                    ? Container(
+                        width: size.width / 3,
+                        height: size.width / 3,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : Visibility(
+                        child: Text(''),
+                        visible: false,
+                      ),
+              );
+            }),
+
+            //show message when error with getting location occurs
             Consumer<LocationNotifier>(
               builder: (context, notifier, child) {
                 if (!notifier.isLoading && notifier.getError != null) {
@@ -114,6 +173,7 @@ class _HomeState extends State<Home> {
                       height: size.width / 2,
                       decoration: BoxDecoration(
                         color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(
                         child: Text(
@@ -134,6 +194,26 @@ class _HomeState extends State<Home> {
                   visible: false,
                 );
               },
+            ),
+
+            //progress when loading bottom sheet
+            Align(
+              child: _isLoadingDetails
+                  ? Container(
+                      width: size.width / 3,
+                      height: size.width / 3,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                  : Visibility(
+                      child: Text(''),
+                      visible: false,
+                    ),
             ),
           ],
         ),
