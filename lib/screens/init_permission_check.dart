@@ -185,6 +185,7 @@ class _InitialPermissionCheckState extends State<InitialPermissionCheck>
           ),
           RaisedButton(
             color: Colors.red,
+            elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
