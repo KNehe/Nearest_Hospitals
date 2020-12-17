@@ -34,7 +34,21 @@ class _HomeState extends State<Home> {
   bool _isCreatingMarkers = true;
   bool _isLoadingDetails = false;
 
+  BitmapDescriptor _customMarkerIcon;
+
+  _createCustomMarkerIcon() {
+    if (_customMarkerIcon == null) {
+      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(12, 12)),
+              'assets/images/icons8-hospital-sign-100.png')
+          .then((icon) {
+        _customMarkerIcon = icon;
+      });
+    }
+  }
+
   _onMapCreated(GoogleMapController controller) async {
+    _createCustomMarkerIcon();
+
     await Provider.of<LocationNotifier>(context, listen: false)
         .checkLocationPermissions();
 
@@ -51,7 +65,7 @@ class _HomeState extends State<Home> {
     _controller.complete(controller);
   }
 
-  _createMarkers(GoogleMapController controller) {
+  _createMarkers(GoogleMapController controller) async {
     Location lastLocation;
 
     setState(() {
@@ -64,6 +78,7 @@ class _HomeState extends State<Home> {
         final marker = Marker(
           markerId: MarkerId(venue.name),
           position: LatLng(venue.location.lat, venue.location.lng),
+          icon: _customMarkerIcon,
           onTap: () {
             _onMarkerTappedHandler(venue);
           },
