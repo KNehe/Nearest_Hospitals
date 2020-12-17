@@ -24,6 +24,7 @@ class LocationNotifier extends ChangeNotifier {
 
   setError(Fault error) {
     _error = error;
+    notifyListeners();
   }
 
   setLoading(bool value) {
@@ -32,7 +33,6 @@ class LocationNotifier extends ChangeNotifier {
   }
 
   Future checkLocationPermissions() async {
-    setLoading(true);
     try {
       Position position = await _locationService.checkLocationPermissions();
       setPosition(position);

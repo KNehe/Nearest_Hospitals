@@ -5,9 +5,8 @@ import 'package:nearest_hospitals/services/places_service.dart';
 import 'package:nearest_hospitals/models/venue.dart';
 
 class PlacesNotifier extends ChangeNotifier {
-  static String _clientId = 'RJZDTPM02MAQKBVEWYG2T4RN234EHWV0NV4RN4MXK5SO4Q4Q';
-  static String _clientSecret =
-      'Z5HRR1OF43Z5VSDUWYV5W305SUJKZUILQP3DIRIV41SL2UAN';
+  static String _clientId = '';
+  static String _clientSecret = '';
   static String _apiVersion = '20190425';
   static String _venueId = 'search';
   static String _query = 'hospital';

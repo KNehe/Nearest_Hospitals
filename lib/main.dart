@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearest_hospitals/Notifiers/location_notifier.dart';
 import 'package:nearest_hospitals/Notifiers/places_notifier.dart';
-import 'package:nearest_hospitals/screens/home.dart';
+import 'package:nearest_hospitals/screens/init_permission_check.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -23,7 +23,7 @@ class NearestHospitals extends StatelessWidget {
           primarySwatch: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: Home(),
+        home: InitialPermissionCheck(),
       ),
     );
   }
