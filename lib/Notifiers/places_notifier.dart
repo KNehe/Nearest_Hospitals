@@ -6,10 +6,9 @@ import 'package:nearest_hospitals/models/venue.dart';
 
 class PlacesNotifier extends ChangeNotifier {
   static String _clientId = '';
+
   static String _clientSecret = '';
   static String _apiVersion = '20190425';
-  static String _venueId = 'search';
-  static String _query = 'hospital';
   static String _radius = '4000';
 
   var _placeService = PlacesService();
@@ -38,8 +37,8 @@ class PlacesNotifier extends ChangeNotifier {
   getPlaces(String latitude, String longitude) async {
     setIsLoadingVenues(true);
     try {
-      Venue venue = await _placeService.getNearestPlaces(_venueId, _clientId,
-          _clientSecret, _apiVersion, latitude, longitude, _query, _radius);
+      Venue venue = await _placeService.getNearestPlaces(
+          _clientId, _clientSecret, _apiVersion, latitude, longitude, _radius);
       setVenue(venue);
     } on Fault catch (e) {
       setFault(e);
