@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:nearest_hospitals/constants/error_messages.dart';
 import 'package:nearest_hospitals/customError/fault.dart';
 import 'package:nearest_hospitals/services/places_service.dart';
 
@@ -42,7 +43,9 @@ class PlacesNotifier extends ChangeNotifier {
       setVenue(venue);
     } on Fault catch (e) {
       setFault(e);
-      print("Erorr ocuredd: ${e.toString()}");
+    } catch (e) {
+      setFault(Fault(message: UNKNOWN_ERROR));
+      print("Erorr occurred: ${e.toString()}");
     }
     setIsLoadingVenues(false);
   }
