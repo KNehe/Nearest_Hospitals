@@ -14,17 +14,15 @@ class PlacesService {
   PlacesService._internal();
 
   getNearestPlaces(
-    String venueId,
     String clientId,
     String clientSecret,
     String apiVersion,
     String lat,
     String long,
-    String query,
     String radius,
   ) async {
     String venueSearchEndPoint =
-        "https://api.foursquare.com/v2/venues/$venueId?client_id=$clientId&client_secret=$clientSecret&v=$apiVersion&ll=$lat,$long&query=$query&radius=$radius";
+        "https://api.foursquare.com/v2/venues/search?ll=$lat,$long&query=hospital&radius=$radius&client_id=$clientId&client_secret=$clientSecret&v=$apiVersion";
     try {
       var response = await http.get(venueSearchEndPoint);
       var venue = venueFromJson(response.body);
