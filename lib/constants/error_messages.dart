@@ -14,3 +14,5 @@ const LOCATION_PERMISSION_ONLY_WHILE_USE =
 
 const LOCATION_PERMISSION_AND_SERVICES_REQUIRED =
     'Location permission and services are required';
+
+const UNKNOWN_ERROR = 'Unknown error occurred';
