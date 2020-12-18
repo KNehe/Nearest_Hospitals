@@ -27,7 +27,7 @@
 - Get a Client Id and Secret Id from [FourSquare](https://foursquare.com/developers/). This is used when getting nearest hsopitals. 
 - Navigate to ```lib/notifiers/places_notifier```. Add the above mentioned Ids to the empty variables ``` static String _clientId = ''; and
   static String _clientSecret = ''; ```.
-- Execute ```flutter run```.
+- Execute ```flutter run'''
 
 ## Note
 - The app was mostly developed and tested on android only.
