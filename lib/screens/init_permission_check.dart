@@ -110,50 +110,41 @@ class _InitialPermissionCheckState extends State<InitialPermissionCheck>
 
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          color: Colors.red,
-          width: size.width,
-          height: size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FutureBuilder(
-                future: Provider.of<LocationNotifier>(context, listen: false)
-                    .checkLocationPermissions(),
-                builder: (context, snapshot) {
-                  return Consumer<LocationNotifier>(builder: (_, notifier, __) {
-                    if (notifier.isLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.white,
-                        ),
-                      );
-                    }
-
-                    if (!notifier.isLoading && notifier.getError != null) {
-                      return initScreenErrorContainer(size, notifier);
-                    } else {
-                      WidgetsBinding.instance.addPostFrameCallback(
-                        (_) => Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Home(),
-                          ),
-                        ),
-                      );
-                    }
-
-                    return Center(
+        body: FutureBuilder(
+          future: Provider.of<LocationNotifier>(context, listen: false)
+              .checkLocationPermissions(),
+          builder: (context, snapshot) {
+            return Consumer<LocationNotifier>(builder: (_, notifier, __) {
+              if (notifier.isLoading) {
+                return wrapper(
+                    Center(
                       child: CircularProgressIndicator(
                         backgroundColor: Colors.white,
                       ),
-                    );
-                  });
-                },
-              ),
-            ],
-          ),
+                    ),
+                    size);
+              }
+
+              if (!notifier.isLoading && notifier.getError != null) {
+                return wrapper(initScreenErrorContainer(size, notifier), size);
+              }
+
+              return Home();
+            });
+          },
         ),
+      ),
+    );
+  }
+
+  Container wrapper(Widget widget, Size size) {
+    return Container(
+      color: Colors.red,
+      width: size.width,
+      height: size.height,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [widget],
       ),
     );
   }
